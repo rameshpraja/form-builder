@@ -1,0 +1,32 @@
+/* Let's highlight canvas boundaries */
+#gjs {
+  border: 3px solid #444;
+  min-height: 3000px;
+}
+
+::ng-deep {
+  .gjs-cv-canvas {
+    width: 100% !important;
+    margin-top: -40px;
+  }
+  .gjs-one-bg {
+    background-color: transparent !important;
+  }
+}
+
+.right-side {
+  height: 100vh;
+  overflow: auto;
+  background-color: #223646;
+  position: fixed;
+  right: 0;
+}
+
+.top-header {
+  background-color: white;
+  height: 80px;
+  padding-top: 20px;
+  border-bottom: 1px solid grey;
+  display: flex;
+  justify-content: space-between;
+}

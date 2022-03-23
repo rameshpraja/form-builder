@@ -1,0 +1,86 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-10 p-0 left-side">
+      <div class="top-header">
+        <div class="left-controls">
+          <a href="#" class="btn" type="button"
+            ><i class="icon feather icon-chevron-left"></i><span>Home</span></a
+          >
+          <button class="btn" type="button" (click)="setDevice('Desktop')">
+            <i class="icon feather icon-monitor"></i>
+          </button>
+          <button class="btn" type="button" (click)="setDevice('Tablet')">
+            <i class="icon feather icon-tablet"></i>
+          </button>
+          <button
+            class="btn"
+            type="button"
+            (click)="setDevice('Mobile landscape')"
+          >
+            <i class="icon feather icon-smartphone"></i>
+          </button>
+        </div>
+        <div class="right-controls">
+          <button class="btn" type="button" (click)="undo()">
+      Undo
+          </button>
+          <button class="btn" type="button" (click)="redo()">
+           Redo
+          </button>
+          <button class="btn" type="button" (click)="clear()">
+            Clear
+          </button>
+          <button class="btn" type="button">
+            <i class="icon feather icon-help-circle"></i>
+          </button>
+          <button
+            (click)="save()"
+            class="btn btn-with-icon btn-save m-0"
+            type="button"
+          >
+            <span>Save</span>
+          </button>
+          <button class="btn btn-with-icon btn-dropdown" type="button">
+            
+          </button>
+          <button (click)="view()" class="btn btn-with-icon" type="button">
+           <span>Preview</span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-with-icon btn-primary"
+            type="button"
+          >
+            <i class="icon feather icon-link"></i><span>Publish</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#editVideoModal"
+          >
+            Edit Video
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#editLinkModal"
+          >
+            Edit Link
+          </button>
+        </div>
+      </div>
+      <div id="gjs"></div>
+    </div>
+    <div class="col-md-2 right-side">
+      <div class="traits-container"></div>
+      <!-- <div class="styles-container"></div> -->
+      <br>
+      <div class="layers-container"></div>
+      <br>
+      <div id="blocks" style="display: flex"></div>
+    </div>
+  </div>
+</div>
