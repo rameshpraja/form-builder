@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import 'grapesjs/dist/css/grapes.min.css';
 // @ts-ignore
 import * as grapesjs from 'grapesjs';
+// @ts-ignore
+import gjsForms from 'grapesjs-plugin-forms';
+// @ts-ignore
+import gjsPresentWebpage from 'grapesjs-preset-webpage';
 
 import { formsHtml, inputHTML } from './constant/form';
 
@@ -26,139 +30,18 @@ export class AppComponent implements OnInit {
   }
 
   initGrapeJS(editor: any) {
-    // this.editor = grapesjs.init({
-    //   container: '#gjs',
-    //   fromElement: true,
-    //   height: '100vh',
-    //   width: 'auto',
-    //   allowScripts: 1,
-    //   // Disable the storage manager for the moment
-    //   storageManager: false,
-    //   // Avoid any default panel
-    //   panels: {
-    //     defaults: [
-    //       {
-    //         id: 'panel-switcher',
-    //         el: '.panel__switcher',
-    //         buttons: [
-    //           {
-    //             id: 'show-traits',
-    //             active: true,
-    //             label: 'Traits',
-    //             command: 'show-traits',
-    //             togglable: false,
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    //   canvas: {
-    //     styles: [],
-    //     scripts: [],
-    //   },
-    //   layerManager: {
-    //     appendTo: '.layers-container',
-    //   },
-    //   traitManager: {
-    //     appendTo: '.traits-container',
-    //   },
-    //   selectorManager: {
-    //     appendTo: '.styles-container',
-    //   },
-    //   // styleManager: {
-    //   //   appendTo: '.styles-container',
-    //   //   sectors: [
-    //   //     {
-    //   //       name: 'Dimension',
-    //   //       open: false,
-    //   //       // Use built-in properties
-    //   //       buildProps: ['width', 'flex', 'font-size'],
-    //   //       // Use `properties` to define/override single property
-    //   //       properties: [
-    //   //         {
-    //   //           // Type of the input,
-    //   //           // options: integer | radio | select | color | slider | file | composite | stack
-    //   //           type: 'integer',
-    //   //           name: 'The width', // Label for the property
-    //   //           property: 'width', // CSS property (if buildProps contains it will be extended)
-    //   //           units: ['px'], // Units, available only for 'integer' types
-    //   //           defaults: 'auto', // Default value
-    //   //           min: 0, // Min value, available only for 'integer' types
-    //   //           max: 100,
-    //   //         },
-    //   //       ],
-    //   //     },
-    //   //     {
-    //   //       name: 'Extra',
-    //   //       open: false,
-    //   //       buildProps: ['background-color', 'box-shadow', 'custom-prop'],
-    //   //       properties: [
-    //   //         {
-    //   //           id: 'custom-prop',
-    //   //           name: 'Custom Label',
-    //   //           property: 'font-size',
-    //   //           type: 'select',
-    //   //           defaults: '32px',
-    //   //           // List of options, available only for 'select' and 'radio'  types
-    //   //           options: [
-    //   //             { value: '12px', name: 'Tiny' },
-    //   //             { value: '18px', name: 'Medium' },
-    //   //             { value: '32px', name: 'Big' },
-    //   //           ],
-    //   //         },
-    //   //       ],
-    //   //     },
-    //   //   ],
-    //   // },
-    //   blockManager: {
-    //     appendTo: '#blocks',
-    //     blocks: [
-    //       {
-    //         id: 'heading', // id is mandatory
-    //         label: '<b>Heading</b>', // You can use HTML/SVG inside labels
-    //         attributes: {
-    //           class: 'gjs-block-section',
-    //           href: '/test',
-    //         },
-    //         content: `<section>
-    //           <h1 style="text-align: center;margin: 40px auto;">This is a simple title</h1>`,
-    //       },
-    //       {
-    //         id: 'description',
-    //         label: 'Description',
-    //         content:
-    //           '<div data-gjs-type="text" style="text-align: center;margin: 10px auto;">Insert your text here</div>',
-    //       },
-    //       {
-    //         id: 'image',
-    //         label: 'Image',
-    //         select: true,
-    //         content: { type: 'image' },
-    //         activate: true,
-    //       },
-    //       {
-    //         id: 'banner',
-    //         label: 'Banner',
-    //         content: `<style>.banner {
-    //           width: 100%;
-    //           height: 600px;
-    //           background-image: url(https://images.pexels.com/photos/1642125/pexels-photo-1642125.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
-    //           background-position: center center;
-    //           background-size: cover;
-    //         }</style></style><div class="banner"></div>`,
-    //       },
-    //     ],
-    //   },
-    // });
     this.editor = grapesjs.init({
-      container : '#gjs',
-      plugins: ['gjs-preset-webpage'],
+      container: '#gjs',
+      plugins: [gjsPresentWebpage, gjsForms],
       pluginsOpts: {
-        'gjs-preset-webpage': {
+        [gjsPresentWebpage]: {
           // options
-        }
-      }
-  });
+        },
+        [gjsForms]: {
+          /* ...options */
+        },
+      },
+    });
     this.blockManager = this.editor.BlockManager;
     this.css = this.editor.Css;
   }
@@ -168,18 +51,19 @@ export class AppComponent implements OnInit {
     formSection.forEach((item, i) => {
       this.blockManager.add('form', {
         category: 'form',
+        type: 'form',
         label: item[0],
         content: item[1],
       });
     });
-    
+
     const inputSection = inputHTML;
     inputSection.forEach((item, i) => {
       this.blockManager.add('input' + i, {
         category: 'input',
         label: item[0],
         droppable: 'data-gjs-type="form"',
-        content: item[1]
+        content: item[1],
       });
     });
   }
