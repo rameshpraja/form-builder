@@ -169,10 +169,7 @@ export class AppComponent implements OnInit {
         category: 'input',
         label: item[0],
         droppable: 'data-gjs-type="form"',
-        content: {
-          content: item[1],
-          droppable: 'data-gjs-type="form"',
-        },
+        content: item[1]
       });
     });
   }
