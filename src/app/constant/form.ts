@@ -18,6 +18,10 @@ function logSubmit(event) {
   form.addEventListener('submit', logSubmit);</script>
     `,
   ],
+  
+];
+
+export const inputHTML = [
   [
     'input',
     `
@@ -31,4 +35,4 @@ function logSubmit(event) {
         <input type="submit" value="Submit"></input>
       `,
   ],
-];
+]

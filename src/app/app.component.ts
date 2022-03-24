@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import 'grapesjs/dist/css/grapes.min.css';
 // @ts-ignore
 import * as grapesjs from 'grapesjs';
-import { formsHtml } from './constant/form';
+import { formsHtml, inputHTML } from './constant/form';
 
 @Component({
   selector: 'app-root',
@@ -14,12 +14,14 @@ export class AppComponent implements OnInit {
   editor: any;
   undoManager: any;
   blockManager: any;
+  css: any;
   constructor() {}
 
   ngOnInit(): void {
     this.initGrapeJS(this.editor);
     this.addCommand(this.editor);
     this.addForm();
+    this.addCSS();
   }
 
   initGrapeJS(editor: any) {
@@ -148,21 +150,40 @@ export class AppComponent implements OnInit {
       },
     });
     this.blockManager = this.editor.BlockManager;
+    this.css = this.editor.Css;
   }
 
   addForm() {
     const formSection = formsHtml;
     formSection.forEach((item, i) => {
-      this.blockManager.add('form' + i, {
+      this.blockManager.add('form', {
         category: 'form',
         label: item[0],
         content: item[1],
-        attributes: {
-          draggable: true,
-          name: 'form',
+      });
+    });
+    
+    const inputSection = inputHTML;
+    inputSection.forEach((item, i) => {
+      this.blockManager.add('input' + i, {
+        category: 'input',
+        label: item[0],
+        droppable: 'data-gjs-type="form"',
+        content: {
+          content: item[1],
+          droppable: 'data-gjs-type="form"',
         },
       });
     });
+  }
+
+  addCSS() {
+    const addedRules = this.css.addRules(`
+    *[data-gjs-highlightable] {
+      outline: 1px dashed rgba(170, 170, 170, 0.7);
+      outline-offset: -2px;
+    }
+    `);
   }
 
   addCommand(editor: any) {
@@ -216,6 +237,7 @@ export class AppComponent implements OnInit {
             // Strings are automatically converted to text types
             'name', // Same as: { type: 'text', name: 'name' }
             'placeholder',
+            'value',
             {
               type: 'select', // Type of the trait
               label: 'Type', // The label you will see in Settings
@@ -239,7 +261,7 @@ export class AppComponent implements OnInit {
         },
       },
     });
-    editor.DomComponents.addType('form', {      
+    editor.DomComponents.addType('form', {
       isComponent: (el: { tagName: string }) => el.tagName == 'FORM',
       model: {
         defaults: {
@@ -255,7 +277,6 @@ export class AppComponent implements OnInit {
                 { id: 'post', name: 'post' },
               ],
             },
-            
           ],
           // As by default, traits are binded to attributes, so to define
           // their initial value we can use attributes
