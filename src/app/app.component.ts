@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import 'grapesjs/dist/css/grapes.min.css';
 // @ts-ignore
 import * as grapesjs from 'grapesjs';
+// @ts-ignore
+import plugin from 'grapesjs-style-bg';
+
+//grapejs
 import { formsHtml, inputHTML } from './constant/form';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +19,9 @@ export class AppComponent implements OnInit {
   editor: any;
   undoManager: any;
   blockManager: any;
+  styleManager: any;
   css: any;
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.initGrapeJS(this.editor);
@@ -32,7 +38,20 @@ export class AppComponent implements OnInit {
       width: 'auto',
       allowScripts: 1,
       // Disable the storage manager for the moment
-      storageManager: false,
+      storageManager: {
+        id: 'gjs-', // Prefix identifier that will be used on parameters
+        type: 'local', // Type of the storage
+        autosave: true, // Store data automatically
+        autoload: true, // Autoload stored data on init
+        stepsBeforeSave: 1, // If autosave enabled, indicates how many changes are necessary before store method is triggered
+      },
+      plugins: [plugin],
+      pluginsOpts: {
+        [plugin]: {
+          /* options */
+          
+        },
+      },
       // Avoid any default panel
       panels: {
         defaults: [
@@ -52,8 +71,14 @@ export class AppComponent implements OnInit {
         ],
       },
       canvas: {
-        styles: [],
-        scripts: [],
+        styles: [
+          'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',
+        ],
+        scripts: [
+          'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js',
+          'https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js',
+          'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js',
+        ],
       },
       layerManager: {
         appendTo: '.layers-container',
@@ -64,51 +89,31 @@ export class AppComponent implements OnInit {
       selectorManager: {
         appendTo: '.styles-container',
       },
-      // styleManager: {
-      //   appendTo: '.styles-container',
-      //   sectors: [
-      //     {
-      //       name: 'Dimension',
-      //       open: false,
-      //       // Use built-in properties
-      //       buildProps: ['width', 'flex', 'font-size'],
-      //       // Use `properties` to define/override single property
-      //       properties: [
-      //         {
-      //           // Type of the input,
-      //           // options: integer | radio | select | color | slider | file | composite | stack
-      //           type: 'integer',
-      //           name: 'The width', // Label for the property
-      //           property: 'width', // CSS property (if buildProps contains it will be extended)
-      //           units: ['px'], // Units, available only for 'integer' types
-      //           defaults: 'auto', // Default value
-      //           min: 0, // Min value, available only for 'integer' types
-      //           max: 100,
-      //         },
-      //       ],
-      //     },
-      //     {
-      //       name: 'Extra',
-      //       open: false,
-      //       buildProps: ['background-color', 'box-shadow', 'custom-prop'],
-      //       properties: [
-      //         {
-      //           id: 'custom-prop',
-      //           name: 'Custom Label',
-      //           property: 'font-size',
-      //           type: 'select',
-      //           defaults: '32px',
-      //           // List of options, available only for 'select' and 'radio'  types
-      //           options: [
-      //             { value: '12px', name: 'Tiny' },
-      //             { value: '18px', name: 'Medium' },
-      //             { value: '32px', name: 'Big' },
-      //           ],
-      //         },
-      //       ],
-      //     },
-      //   ],
-      // },
+      styleManager: {
+        appendTo: '.styles-container',
+        sectors: [
+          {
+            name: 'Dimension',
+            open: false,
+            // Use built-in properties
+            buildProps: ['width', 'flex', 'font-size'],
+            // Use `properties` to define/override single property
+            properties: [
+              {
+                // Type of the input,
+                // options: integer | radio | select | color | slider | file | composite | stack
+                type: 'integer',
+                name: 'The width', // Label for the property
+                property: 'width', // CSS property (if buildProps contains it will be extended)
+                units: ['px'], // Units, available only for 'integer' types
+                defaults: 'auto', // Default value
+                min: 0, // Min value, available only for 'integer' types
+                max: 100,
+              },
+            ],
+          },
+        ],
+      },
       blockManager: {
         appendTo: '#blocks',
         blocks: [
@@ -151,25 +156,26 @@ export class AppComponent implements OnInit {
     });
     this.blockManager = this.editor.BlockManager;
     this.css = this.editor.Css;
+    this.styleManager = this.editor.StyleManager;
   }
 
   addForm() {
     const formSection = formsHtml;
     formSection.forEach((item, i) => {
-      this.blockManager.add('form', {
+      this.blockManager.add(item[0], {
         category: 'form',
         label: item[0],
         content: item[1],
       });
     });
-    
+
     const inputSection = inputHTML;
     inputSection.forEach((item, i) => {
       this.blockManager.add('input' + i, {
         category: 'input',
         label: item[0],
         droppable: 'data-gjs-type="form"',
-        content: item[1]
+        content: item[1],
       });
     });
   }
@@ -235,6 +241,8 @@ export class AppComponent implements OnInit {
             'name', // Same as: { type: 'text', name: 'name' }
             'placeholder',
             'value',
+            'minlength',
+            'maxlength',
             {
               type: 'select', // Type of the trait
               label: 'Type', // The label you will see in Settings
@@ -249,12 +257,11 @@ export class AppComponent implements OnInit {
             },
             {
               type: 'checkbox',
+              label: 'Required',
               name: 'required',
             },
           ],
-          // As by default, traits are binded to attributes, so to define
-          // their initial value we can use attributes
-          attributes: { type: 'text', required: true },
+          attributes: {},
         },
       },
     });
@@ -281,6 +288,20 @@ export class AppComponent implements OnInit {
         },
       },
     });
+    const property = this.styleManager.addProperty(
+      '',
+      {
+        label: 'Minimum height',
+        property: 'min-height',
+        type: 'select',
+        default: '100px',
+        options: [
+          { id: '100px', label: '100' },
+          { id: '200px', label: '200' },
+        ],
+      },
+      { at: 0 }
+    );
   }
 
   setDevice(device: string) {
@@ -298,26 +319,37 @@ export class AppComponent implements OnInit {
 
   clear(): void {
     this.editor.runCommand('core:canvas-clear');
+    this.css.addRules(`
+    *[data-gjs-highlightable] {
+      outline: 1px dashed rgba(170, 170, 170, 0.7);
+      outline-offset: -2px;
+    }
+    `);
   }
 
   view(): void {
     const html = this.editor.getHtml();
     // const css = this.editor.getCss();
-    const css =
-      this.editor.getCss() +
-      `.grid-item{
-     border: none !important;
- }`;
+    const css = this.editor.getCss();
+    const js = this.editor.getJs();
     this.save();
-    console.log(html);
-    console.log(css);
+    this.saveTemplate(html, css, js);
+  }
+
+  saveTemplate(html: any, css: any, js: any) {
+    this.http.post('http://localhost:5000/save', { html, css, js }).subscribe(
+      (res: any) => {
+        console.log(res);
+        const url = 'http://localhost:5000/preview/' + res._id;
+        window.open(url, '_blank');
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   save(): void {
-    const css =
-      this.editor.getCss() +
-      `.grid-item{
-       border: none !important;
-   }`;
+    const css = this.editor.getCss();
   }
 }
