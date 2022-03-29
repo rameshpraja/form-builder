@@ -93,7 +93,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   addCSS() {
     const addedRules = this.css.addRules(`
-    *[data-gjs-highlightable] {
+    .gjs-dashed *[data-gjs-highlightable] {
       outline: 1px dashed rgba(170, 170, 170, 0.7);
       outline-offset: -2px;
     }
