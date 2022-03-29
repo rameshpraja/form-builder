@@ -1,49 +1,72 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import 'grapesjs/dist/css/grapes.min.css';
 // @ts-ignore
 import * as grapesjs from 'grapesjs';
 // @ts-ignore
-import gjsForms from 'grapesjs-plugin-forms';
-// @ts-ignore
 import gjsPresentWebpage from 'grapesjs-preset-webpage';
+//@ts-ignore
+import plugin from 'grapesjs-style-bg';
 
 import { formsHtml, inputHTML } from './constant/form';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   title = 'angular-grapejs';
   editor: any;
   undoManager: any;
   blockManager: any;
   css: any;
-  constructor() {}
+  optionPanel:any;
+  previewButton:HTMLInputElement;
+  constructor(private http: HttpClient) {}
 
+  
   ngOnInit(): void {
     this.initGrapeJS(this.editor);
     this.addCommand(this.editor);
     this.addForm();
     this.addCSS();
+
+    
+    // this.el.nativeElement.on('click',()=>{ 
+    //   alert("test"); 
+    // });
+  }
+
+  ngAfterViewInit(): void {
+    this.previewButton = (<HTMLInputElement>document.getElementById("preview-button"));
+    this.previewButton.onclick = () => {
+      this.view();
+    }
   }
 
   initGrapeJS(editor: any) {
     this.editor = grapesjs.init({
       container: '#gjs',
-      plugins: [gjsPresentWebpage, gjsForms],
+      plugins: [plugin],
       pluginsOpts: {
-        [gjsPresentWebpage]: {
-          // options
-        },
-        [gjsForms]: {
-          /* ...options */
-        },
+        [plugin]: {},
+      },
+      allowScripts: 1, 
+      canvas: {
+        styles: [
+          'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',
+        ],
+        scripts: [
+          'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js',
+          'https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js',
+          'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js',
+        ],
       },
     });
     this.blockManager = this.editor.BlockManager;
     this.css = this.editor.Css;
+    this.optionPanel = this.editor.Panels.getPanel('options');
   }
 
   addForm() {
@@ -79,47 +102,6 @@ export class AppComponent implements OnInit {
 
   addCommand(editor: any) {
     // Define commands
-    editor.Commands.add('show-layers', {
-      getRowEl(editor: any) {
-        return editor.getContainer().closest('.editor-row');
-      },
-      getLayersEl(row: any) {
-        return row.querySelector('.layers-container');
-      },
-
-      run(editor: any, sender: any) {
-        const lmEl = this.getLayersEl(this.getRowEl(editor));
-        lmEl.style.display = '';
-      },
-      stop(editor: any, sender: any) {
-        const lmEl = this.getLayersEl(this.getRowEl(editor));
-        lmEl.style.display = 'none';
-      },
-    });
-    editor.Commands.add('show-styles', {
-      getRowEl(editor: any) {
-        return editor.getContainer().closest('.editor-row');
-      },
-      getStyleEl(row: any) {
-        return row.querySelector('.styles-container');
-      },
-
-      run(editor: any, sender: any) {
-        const smEl = this.getStyleEl(this.getRowEl(editor));
-        smEl.style.display = '';
-      },
-      stop(editor: any, sender: any) {
-        const smEl = this.getStyleEl(this.getRowEl(editor));
-        smEl.style.display = 'none';
-      },
-    });
-    // Commands
-    editor.Commands.add('set-device-desktop', {
-      run: (editor: any) => editor.setDevice('Desktop'),
-    });
-    editor.Commands.add('set-device-mobile', {
-      run: (editor: any) => editor.setDevice('Mobile'),
-    });
     editor.DomComponents.addType('input', {
       isComponent: (el: { tagName: string }) => el.tagName == 'INPUT',
       model: {
@@ -175,6 +157,22 @@ export class AppComponent implements OnInit {
         },
       },
     });
+    editor.Panels.addButton('options', {
+      id: 'clear-button',
+      className: 'btn-clear-button',
+      label: 'Clear',
+      command(editor: any) {
+        editor.runCommand('core:canvas-clear');
+      },
+    });    
+    this.editor.Panels.addButton('options', {
+      id: 'preview-button',
+      className: 'btn-preview-button',
+      label: 'Save on server',
+      attributes: { id: 'preview-button' },
+    });
+
+    // this.optionPanel.get('buttons').remove('preview');
   }
 
   setDevice(device: string) {
@@ -194,17 +192,27 @@ export class AppComponent implements OnInit {
     this.editor.runCommand('core:canvas-clear');
   }
 
+  
   view(): void {
     const html = this.editor.getHtml();
     // const css = this.editor.getCss();
-    const css =
-      this.editor.getCss() +
-      `.grid-item{
-     border: none !important;
- }`;
+    const css = this.editor.getCss();
+    const js = this.editor.getJs();
     this.save();
-    console.log(html);
-    console.log(css);
+    this.saveTemplate(html, css, js);
+  }
+
+  saveTemplate(html: any, css: any, js: any) {
+    this.http.post('http://localhost:5000/save', { html, css, js }).subscribe(
+      (res: any) => {
+        console.log(res);
+        const url = 'http://localhost:5000/preview/' + res._id;
+        window.open(url, '_blank');
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   }
 
   save(): void {
@@ -215,3 +223,4 @@ export class AppComponent implements OnInit {
    }`;
   }
 }
+
