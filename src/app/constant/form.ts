@@ -122,7 +122,9 @@ export const formsHtml = [
   </script>
     `,
   ],
-  ['form with validation',`
+  [
+    'Blank Form',
+    `
   <form class="row py-4 px-2 needs-validation" style="min-height:100px" id="form" novalidate>
   
 </form>
@@ -135,14 +137,18 @@ export const formsHtml = [
   // Loop over them and prevent submission
   Array.prototype.slice.call(forms)
     .forEach(function (form) {
-      form.confirmPassword.addEventListener("keyup", function () {
-        if (form.password.value !== form.confirmPassword.value) {
-          form.confirmPassword.setCustomValidity("Invalid field.");
-        } 
-        else {
-          form.confirmPassword.setCustomValidity("");
-        }
-      });
+      if (
+        form.confirmPassword !== undefined &&
+        form.password !== undefined
+      ) {
+        form.confirmPassword.addEventListener("keyup", function () {
+          if (form.password.value !== form.confirmPassword.value) {
+            form.confirmPassword.setCustomValidity("Invalid field.");
+          } else {
+            form.confirmPassword.setCustomValidity("");
+          }
+        });
+      }
       form.addEventListener('submit', function (event) {
         if (!form.checkValidity()) {
           event.preventDefault()
@@ -153,15 +159,63 @@ export const formsHtml = [
     })
 })()
 </script>
-  `]
-  
+  `,
+  ],
 ];
 
 export const inputHTML = [
   [
+    '1 blocks'
+    ,
+    `
+    <div class="row" style="min-height:50px">
+          <div class="col-md-12"></div>
+      </div>
+    `
+  ],
+  [
+    '2 blocks'
+    ,
+    `
+    <div class="row" style="min-height:50px">
+          <div class="col-md-6"></div>
+          <div class="col-md-6"></div>
+      </div>
+    `
+  ],
+  [
+    '3 blocks'
+    ,
+    `
+    <div class="row" style="min-height:50px">
+          <div class="col-md-4"></div>
+          <div class="col-md-4"></div>
+          <div class="col-md-4"></div>
+      </div>
+    `
+  ],
+  [
+    '4 blocks'
+    ,
+    `
+    <div class="row" style="min-height:50px">
+          <div class="col-md-3"></div>
+          <div class="col-md-3"></div>
+          <div class="col-md-3"></div>
+          <div class="col-md-3"></div>
+      </div>
+    `
+  ],
+  [
+    'Heading',
+    `
+    <p class="h3 text-center">Enter title</p>
+    `,
+  ],
+  [
     'input',
     `
-    <div class="col-md-12 p-2">
+    <div class="form-group p-2">
     <label for="validationCustom01" class="form-label">First name</label>
     <input type="text" class="form-control" id="validationCustom01" required>
     <div class="valid-feedback">
@@ -176,7 +230,7 @@ export const inputHTML = [
   [
     'Password input',
     `
-    <div class="col-md-12 p-2">
+    <div class="form-group p-2">
     <label for="validationCustom01" class="form-label">Password</label
     ><input
       type="password"
@@ -190,7 +244,7 @@ export const inputHTML = [
     <div class="valid-feedback">Looks good!</div>
     <div class="invalid-feedback">Please provide a valid input.</div>
   </div>
-  <div class="col-md-12 p-2">
+  <div class="form-group p-2">
     <label for="validationCustom01" class="form-label">Confirm Password</label
     ><input
       type="password"
@@ -203,12 +257,12 @@ export const inputHTML = [
     <div class="valid-feedback">Password match</div>
     <div class="invalid-feedback">Please provide a valid input.</div>
   </div>
-    `
-  ],  
+    `,
+  ],
   [
     'submit button',
     `
     <button type="submit" class="btn btn-primary">Submit</button>
       `,
   ],
-]
+];

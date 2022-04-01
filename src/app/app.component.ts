@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import 'grapesjs/dist/css/grapes.min.css';
 // @ts-ignore
 import * as grapesjs from 'grapesjs';
@@ -21,38 +27,39 @@ export class AppComponent implements OnInit, AfterViewInit {
   undoManager: any;
   blockManager: any;
   css: any;
-  optionPanel:any;
-  previewButton:HTMLInputElement;
+  optionPanel: any;
+  previewButton: HTMLInputElement;
   constructor(private http: HttpClient) {}
 
-  
   ngOnInit(): void {
     this.initGrapeJS(this.editor);
     this.addCommand(this.editor);
     this.addForm();
     this.addCSS();
 
-    
-    // this.el.nativeElement.on('click',()=>{ 
-    //   alert("test"); 
+    // this.el.nativeElement.on('click',()=>{
+    //   alert("test");
     // });
   }
 
   ngAfterViewInit(): void {
-    this.previewButton = (<HTMLInputElement>document.getElementById("preview-button"));
+    this.previewButton = <HTMLInputElement>(
+      document.getElementById('preview-button')
+    );
     this.previewButton.onclick = () => {
       this.view();
-    }
+    };
   }
 
   initGrapeJS(editor: any) {
     this.editor = grapesjs.init({
       container: '#gjs',
-      plugins: [plugin],
+      // plugins: [plugin, gjsPresentWebpage],
       pluginsOpts: {
-        [plugin]: {},
+        // [plugin]: {},
+        // [gjsPresentWebpage]: {},
       },
-      allowScripts: 1, 
+      allowScripts: 1,
       canvas: {
         styles: [
           'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',
@@ -72,9 +79,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   addForm() {
     const formSection = formsHtml;
     formSection.forEach((item, i) => {
-      this.blockManager.add('form', {
-        category: 'form',
-        type: 'form',
+      this.blockManager.add('validation form'+i, {
+        category: 'validation form',
         label: item[0],
         content: item[1],
       });
@@ -93,7 +99,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   addCSS() {
     const addedRules = this.css.addRules(`
-    .gjs-dashed *[data-gjs-highlightable] {
+    *[data-gjs-highlightable] {
       outline: 1px dashed rgba(170, 170, 170, 0.7);
       outline-offset: -2px;
     }
@@ -111,6 +117,9 @@ export class AppComponent implements OnInit, AfterViewInit {
             'name', // Same as: { type: 'text', name: 'name' }
             'placeholder',
             'value',
+            'pattern',
+            'minlength',
+            'maxlength',
             {
               type: 'select', // Type of the trait
               label: 'Type', // The label you will see in Settings
@@ -164,7 +173,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       command(editor: any) {
         editor.runCommand('core:canvas-clear');
       },
-    });    
+    });
     this.editor.Panels.addButton('options', {
       id: 'preview-button',
       className: 'btn-preview-button',
@@ -192,7 +201,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.editor.runCommand('core:canvas-clear');
   }
 
-  
   view(): void {
     const html = this.editor.getHtml();
     // const css = this.editor.getCss();
@@ -223,4 +231,3 @@ export class AppComponent implements OnInit, AfterViewInit {
    }`;
   }
 }
-

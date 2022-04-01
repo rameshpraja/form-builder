@@ -1,0 +1,180 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Grape js</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+      integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      [data-gjs-highlightable] {
+        outline-color: rgba(170, 170, 170, 0.7);
+        outline-style: dashed;
+        outline-width: 1px;
+        outline-offset: -2px;
+      }
+      #form {
+        min-height: 100px;
+      }
+      #ipia {
+        min-height: 50px;
+      }
+      #ip9l {
+        min-height: 50px;
+      }
+      #ix041 {
+        min-height: 50px;
+      }
+    </style>
+    <form
+      type="text"
+      required
+      id="form"
+      novalidate=""
+      class="row py-4 px-2 needs-validation"
+    >
+      <p class="h3 text-center">Contact US</p>
+      <div class="row" id="ipia">
+        <div class="col-md-6">
+          <div class="form-group p-2">
+            <label for="validationCustom01" class="form-label">First name</label
+            ><input
+              type="text"
+              required
+              id="validationCustom01"
+              name="firstName"
+              placeholder="Enter first name"
+              minlength="2"
+              maxlength="5"
+              class="form-control"
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please provide a valid input.</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group p-2">
+            <label for="validationCustom01" class="form-label">Last name</label
+            ><input
+              type="text"
+              id="validationCustom01-2"
+              name="lastName"
+              placeholder="Enter last name"
+              class="form-control"
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please provide a valid input.</div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="ip9l">
+        <div class="col-md-6">
+          <div class="form-group p-2">
+            <label for="validationCustom01" class="form-label">email</label
+            ><input
+              type="email"
+              required
+              id="validationCustom01-3"
+              name="email"
+              placeholder="Please enter email"
+              pattern="[a-z0-9]+@[a-z]+\.[a-z]{2,3}"
+              class="form-control"
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please provide a valid input.</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group p-2">
+            <label for="validationCustom01" class="form-label">Phone no.</label
+            ><input
+              type="number"
+              required
+              id="validationCustom01-4"
+              name="contact"
+              placeholder="Enter contatct"
+              minlength="10"
+              maxlength="10"
+              class="form-control"
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please provide a valid input.</div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="ix041">
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
+      </div>
+    </form>
+    <script>
+      // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function () {
+        "use strict";
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll(".needs-validation");
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms).forEach(function (form) {
+          if (
+            form.confirmPassword !== undefined &&
+            form.password !== undefined
+          ) {
+            form.confirmPassword.addEventListener("keyup", function () {
+              if (form.password.value !== form.confirmPassword.value) {
+                form.confirmPassword.setCustomValidity("Invalid field.");
+              } else {
+                form.confirmPassword.setCustomValidity("");
+              }
+            });
+          }
+          form.addEventListener(
+            "submit",
+            function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      })();
+    </script>
+    <script></script>
+  </body>
+</html>
