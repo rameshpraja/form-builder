@@ -13,7 +13,7 @@ import gjsPresentWebpage from 'grapesjs-preset-webpage';
 //@ts-ignore
 import plugin from 'grapesjs-style-bg';
 
-import { formsHtml, inputHTML } from './constant/form';
+import { formsHtml, inputHTML ,testingHtml} from './constant/form';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -68,6 +68,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js',
           'https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js',
           'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js',
+          'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+          'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js'
         ],
       },
     });
@@ -92,6 +94,15 @@ export class AppComponent implements OnInit, AfterViewInit {
         category: 'input',
         label: item[0],
         droppable: 'data-gjs-type="form"',
+        content: item[1],
+      });
+    });
+
+    const testing = testingHtml;
+    testing.forEach((item, i) => {
+      this.blockManager.add('Test' + i, {
+        category: 'test',
+        label: item[0],
         content: item[1],
       });
     });

@@ -266,3 +266,67 @@ export const inputHTML = [
       `,
   ],
 ];
+
+export const testingHtml = [[
+  'Ajax',
+  `
+  <div id="div1" class="div1">
+        
+  </div>
+  <scrip>
+    $.ajax({
+      url: "https://catfact.ninja/fact",
+      success: function (result) {
+        console.log(result.fact);
+        $("#div1").html(result.fact);
+      },
+    });
+  </script>
+  `
+],
+[
+  `Products with handlebar`,
+  `
+  <div id="products"></div>
+  <div id="template" type="text/x-handlebars-template" class="d-none">
+    <div class="container">
+      <div class="row ">
+        {{#each products}}
+          <div class="card p-1 col-md-3 my-2">
+            <img
+              class="card-img-top"
+              style="height: 420px;"
+              src="{{this.image}}"
+              alt="Card image cap"
+            />
+            <div class="card-body">
+              <h5>{{this.title}}</h5>
+              <p
+                class="card-text"
+                style="overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 3; /* number of lines to show */
+                      line-clamp: 3; 
+              -webkit-box-orient: vertical;"
+              >{{this.description}}</p>
+            </div>
+            <div class="btn btn-success">Buy @ {{this.price}}</div>
+          </div> 
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  <script>
+    var template = document.getElementById("template").innerHTML;
+    var compiled_template = Handlebars.compile(template);
+    $.ajax({
+      url: "https://fakestoreapi.com/products",
+      success: function (result) {
+        var rendered = compiled_template({ products: result });
+        document.getElementById("products").innerHTML = rendered;
+      },
+    });
+  </script>
+  `
+],]
