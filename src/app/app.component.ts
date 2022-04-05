@@ -1,20 +1,11 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import 'grapesjs/dist/css/grapes.min.css';
 // @ts-ignore
 import * as grapesjs from 'grapesjs';
-// @ts-ignore
-import gjsPresentWebpage from 'grapesjs-preset-webpage';
-//@ts-ignore
-import plugin from 'grapesjs-style-bg';
 
-import { formsHtml, inputHTML ,testingHtml} from './constant/form';
 import { HttpClient } from '@angular/common/http';
+import { gridBlocks } from './constant/grid';
+import { basicBlocks } from './constant/basic';
 
 @Component({
   selector: 'app-root',
@@ -29,17 +20,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   css: any;
   optionPanel: any;
   previewButton: HTMLInputElement;
+  panelManager: any;
+  tabPanel: any;
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.initGrapeJS(this.editor);
     this.addCommand(this.editor);
-    this.addForm();
+    this.setBlocks();
     this.addCSS();
-
-    // this.el.nativeElement.on('click',()=>{
-    //   alert("test");
-    // });
   }
 
   ngAfterViewInit(): void {
@@ -54,11 +43,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   initGrapeJS(editor: any) {
     this.editor = grapesjs.init({
       container: '#gjs',
-      // plugins: [plugin, gjsPresentWebpage],
-      pluginsOpts: {
-        // [plugin]: {},
-        // [gjsPresentWebpage]: {},
-      },
+      pluginsOpts: {},
       allowScripts: 1,
       canvas: {
         styles: [
@@ -69,41 +54,31 @@ export class AppComponent implements OnInit, AfterViewInit {
           'https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js',
           'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js',
           'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
-          'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js'
+          'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js',
         ],
       },
     });
     this.blockManager = this.editor.BlockManager;
+    this.panelManager = this.editor.Panels;
     this.css = this.editor.Css;
     this.optionPanel = this.editor.Panels.getPanel('options');
   }
 
-  addForm() {
-    const formSection = formsHtml;
-    formSection.forEach((item, i) => {
-      this.blockManager.add('validation form'+i, {
-        category: 'validation form',
-        label: item[0],
-        content: item[1],
+  setBlocks() {
+    gridBlocks.forEach((block) => {
+      this.blockManager.add('grid/' + block.name, {
+        label: block.name,
+        category: 'Grid',
+        content: block.code,
+        tab: 'content',
       });
     });
-
-    const inputSection = inputHTML;
-    inputSection.forEach((item, i) => {
-      this.blockManager.add('input' + i, {
-        category: 'input',
-        label: item[0],
-        droppable: 'data-gjs-type="form"',
-        content: item[1],
-      });
-    });
-
-    const testing = testingHtml;
-    testing.forEach((item, i) => {
-      this.blockManager.add('Test' + i, {
-        category: 'test',
-        label: item[0],
-        content: item[1],
+    basicBlocks.forEach((block) => {
+      this.blockManager.add('basic/' + block.name, {
+        label: block.name,
+        category: 'Basic',
+        content: block.code,
+        tab: 'content',
       });
     });
   }
@@ -191,8 +166,20 @@ export class AppComponent implements OnInit, AfterViewInit {
       label: 'Save on server',
       attributes: { id: 'preview-button' },
     });
-
-    // this.optionPanel.get('buttons').remove('preview');
+    // this.tabPanel = this.panelManager.addPanel({
+    //   id: 'tab-panel',
+    //   visible: true,
+    //   buttons: [
+    //     {
+    //       id: 'test-button',
+    //       className: 'btn-test-button',
+    //       label: 'Save on server',
+    //       attributes: { id: 'test-button' },
+    //     },
+    //   ],
+    // });
+    // console.log(this.panelManager.getPanel('views'));
+    
   }
 
   setDevice(device: string) {
@@ -214,10 +201,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   view(): void {
     const html = this.editor.getHtml();
-    // const css = this.editor.getCss();
     const css = this.editor.getCss();
     const js = this.editor.getJs();
-    this.save();
     this.saveTemplate(html, css, js);
   }
 
@@ -232,13 +217,5 @@ export class AppComponent implements OnInit, AfterViewInit {
         console.log(error);
       }
     );
-  }
-
-  save(): void {
-    const css =
-      this.editor.getCss() +
-      `.grid-item{
-       border: none !important;
-   }`;
   }
 }
