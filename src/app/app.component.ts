@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import 'grapesjs/dist/css/grapes.min.css';
 // @ts-ignore
 import * as grapesjs from 'grapesjs';
@@ -6,6 +12,7 @@ import * as grapesjs from 'grapesjs';
 import { HttpClient } from '@angular/common/http';
 import { gridBlocks } from './constant/grid';
 import { basicBlocks } from './constant/basic';
+import { BlockTab } from './enum/blockTab.enum';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +29,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   previewButton: HTMLInputElement;
   panelManager: any;
   tabPanel: any;
+  dragStart;
+  dragStop;
+  blocks: any[];
+  BlockTab = BlockTab;
+  activeBlockType = BlockTab.Elements;
+  @ViewChild('blocksDiv', { static: false }) blocksDiv: ElementRef;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
@@ -43,7 +57,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   initGrapeJS(editor: any) {
     this.editor = grapesjs.init({
       container: '#gjs',
-      pluginsOpts: {},
       allowScripts: 1,
       canvas: {
         styles: [
@@ -57,11 +70,17 @@ export class AppComponent implements OnInit, AfterViewInit {
           'https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js',
         ],
       },
+      blockManager: {
+        custom: true,
+        block: this.blocks,
+      },
     });
     this.blockManager = this.editor.BlockManager;
     this.panelManager = this.editor.Panels;
     this.css = this.editor.Css;
     this.optionPanel = this.editor.Panels.getPanel('options');
+    // this.panelManager.getButton('views', 'open-sm').set('active', false);
+    // this.panelManager.getButton('views', 'open-blocks').set('active', true);
   }
 
   setBlocks() {
@@ -71,6 +90,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         category: 'Grid',
         content: block.code,
         tab: 'content',
+        iconLink: block.iconLink,
       });
     });
     basicBlocks.forEach((block) => {
@@ -79,6 +99,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         category: 'Basic',
         content: block.code,
         tab: 'content',
+        iconLink: block.iconLink,
       });
     });
   }
@@ -166,20 +187,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       label: 'Save on server',
       attributes: { id: 'preview-button' },
     });
-    // this.tabPanel = this.panelManager.addPanel({
-    //   id: 'tab-panel',
-    //   visible: true,
-    //   buttons: [
-    //     {
-    //       id: 'test-button',
-    //       className: 'btn-test-button',
-    //       label: 'Save on server',
-    //       attributes: { id: 'test-button' },
-    //     },
-    //   ],
-    // });
-    // console.log(this.panelManager.getPanel('views'));
-    
+    editor.on('block:custom', (props) => {
+      this.blocks = props.blocks;
+      this.dragStart = props.dragStart;
+      this.dragStop = props.dragStop;
+
+      const cnt = props.container;
+      cnt && cnt.appendChild(this.blocksDiv.nativeElement);
+    });
   }
 
   setDevice(device: string) {
@@ -217,5 +232,11 @@ export class AppComponent implements OnInit, AfterViewInit {
         console.log(error);
       }
     );
+  }
+  onDragStart(block, $event) {
+    this.dragStart(block);
+  }
+  onDragStop() {
+    this.dragStop();
   }
 }
