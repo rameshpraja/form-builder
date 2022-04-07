@@ -28,6 +28,7 @@
       integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
       crossorigin="anonymous"
     ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   </head>
   <body>
     <style>
@@ -43,126 +44,30 @@
         outline-width: 1px;
         outline-offset: -2px;
       }
+      #form {
+        min-height: 100px;
+      }
+      #ipia {
+        min-height: 50px;
+      }
+      #ip9l {
+        min-height: 50px;
+      }
+      #ix041 {
+        min-height: 50px;
+      }
     </style>
-    <form
-      type="text"
-      id="form"
-      novalidate=""
-      class="row py-4 px-2 needs-validation"
-    >
-      <div class="row">
-        <div class="col-md-6 mt-1">
-          <div class="form-group">
-            <label for="firstName">First Name:</label
-            ><input
-              type="text"
-              required
-              id="firstName"
-              aria-describedby="emailHelp"
-              placeholder="Enter First Name"
-              name="firstName"
-              class="form-control"
-            />
-            <div class="invalid-feedback">Please provide a valid input.</div>
-          </div>
-        </div>
-        <div class="col-md-6 mt-1">
-          <div class="form-group">
-            <label for="lastName">Last address:</label
-            ><input
-              type="text"
-              required
-              id="lastName"
-              placeholder="Enter last Name"
-              name="lastName"
-              class="form-control"
-            />
-          </div>
-        </div>
-        <div class="col-md-6 mt-1">
-          <div class="form-group">
-            <label for="firstName">Company Name:</label
-            ><input
-              type="text"
-              required
-              id="companyName"
-              placeholder="Enter Company Name"
-              name="companyName"
-              class="form-control"
-            />
-          </div>
-        </div>
-        <div class="col-md-6 mt-1">
-          <div class="form-group">
-            <label for="email">Email address</label
-            ><input
-              type="text"
-              required
-              id="email"
-              aria-describedby="emailHelp"
-              placeholder="Enter Email"
-              name="email"
-              class="form-control"
-            />
-            <div class="invalid-feedback">Please provide a valid input.</div>
-          </div>
-        </div>
-        <div class="col-md-12 mt-1">
-          <div class="form-group">
-            <label for="phone">Phone number:</label
-            ><input
-              type="number"
-              required
-              id="phone"
-              aria-describedby="emailHelp"
-              placeholder="Enter First Name"
-              name="phone"
-              class="form-control"
-            />
-            <div class="invalid-feedback">Please provide a valid input.</div>
-          </div>
-        </div>
-        <div class="col-md-12 mt-1">
-          <div class="form-group">
-            <label for="address">Address</label
-            ><textarea
-              id="address"
-              name="address"
-              rows="3"
-              class="form-control"
-            ></textarea>
-          </div>
-        </div>
-        <div class="col-md-12 mt-1">
-          <button type="submit" class="btn btn-success">SUBMIT</button
-          ><button type="reset" class="btn btn-primary">RESET</button>
-        </div>
-      </div>
-    </form>
+    <div id="div1" class="div1">
+        
+    </div>
     <script>
-      // Example starter JavaScript for disabling form submissions if there are invalid fields
-      (function () {
-        "use strict";
-
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.querySelectorAll(".needs-validation");
-
-        // Loop over them and prevent submission
-        Array.prototype.slice.call(forms).forEach(function (form) {
-          form.addEventListener(
-            "submit",
-            function (event) {
-              if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-
-              form.classList.add("was-validated");
-            },
-            false
-          );
-        });
-      })();
+      $.ajax({
+        url: "https://catfact.ninja/fact",
+        success: function (result) {
+          console.log(result.fact);
+          $("#div1").html(result.fact);
+        },
+      });
     </script>
     <script></script>
   </body>
