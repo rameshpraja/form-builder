@@ -205,6 +205,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   undo(): void {
     return this.undoManager.undo();
   }
+  
 
   redo(): void {
     return this.undoManager.redo();
